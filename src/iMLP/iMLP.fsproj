@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Logging.fs" />
     <Compile Include="Domain.fs" />
+    <Compile Include="CLIArgs.fs" />
+    <Compile Include="API.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -17,6 +20,7 @@
     <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
     <PackageReference Include="FSharp.Stats" Version="0.4.0" />
     <PackageReference Include="FSharpAux" Version="1.0.0" />
+    <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="Plotly.NET" Version="2.0.0-beta8" />
   </ItemGroup>
 
