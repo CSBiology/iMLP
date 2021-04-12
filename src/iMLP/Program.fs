@@ -57,9 +57,9 @@ Learn more about iMTS-L here: [LINK]
         logger.Debug(sprintf "Output Kind: %A" outputKind)
 
 
-        match ((results.TryGetResult(IMLP_CLIArgs.Sequence)),((results.TryGetResult(IMLP_CLIArgs.OutputFile)))) with
+        match ((results.TryGetResult(IMLP_CLIArgs.Sequence)),((results.TryGetResult(IMLP_CLIArgs.InputFile)))) with
 
-        | Some _, Some _ -> failwith ""
+        | Some _, Some _ -> failwith "Only one of --sequence (-s) or --inputFile (-f) may be defined at once."
         | Some sequence, None -> 
                 
             logger.Debug(sprintf "Input sequence: %s" sequence)
