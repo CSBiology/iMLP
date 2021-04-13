@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="IMTS.model">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="Logging.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="CLIArgs.fs" />

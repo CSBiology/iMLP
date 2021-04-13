@@ -118,14 +118,26 @@ module BasicTasks =
 
     let build = BuildTask.create "Build" [clean] {
         solutionFile
-        |> DotNet.build id
+        |> DotNet.build (fun buildParams ->
+            let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
+            {
+                buildParams with
+                    Configuration = DotNet.BuildConfiguration.fromString configuration
+                    MSBuildParams = {
+                        standardParams with
+                            Properties = [
+                                "Platform","x64"
+                            ]
+                    };
+            }
+        )
     }
 
     let copyBinaries = BuildTask.create "CopyBinaries" [clean; build] {
         let targets = 
             !! "src/**/*.??proj"
             -- "src/**/*.shproj"
-            |>  Seq.map (fun f -> ((Path.getDirectory f) </> "bin" </> configuration, "bin" </> (Path.GetFileNameWithoutExtension f)))
+            |>  Seq.map (fun f -> ((Path.getDirectory f) </> "bin/x64" </> configuration, "bin" </> (Path.GetFileNameWithoutExtension f)))
         for i in targets do printfn "%A" i
         targets
         |>  Seq.iter (fun (fromDir, toDir) -> Shell.copyDir toDir fromDir (fun _ -> true))
