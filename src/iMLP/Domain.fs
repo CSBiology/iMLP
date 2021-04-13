@@ -3,7 +3,9 @@ open NLog
 
 type OutputKind =
     | STDOut
-    | File of string
+    | File of outputFile:string 
+    | PlotsOnly of plotDirectory:string
+    | FileAndPlots of outputFile:string*plotDirectory:string
 
 let logLevelofInt (i:int) =
     match i with
@@ -13,25 +15,28 @@ let logLevelofInt (i:int) =
     | 3 -> LogLevel.Info
     | _ -> LogLevel.Debug
 
-
 type SingleSequencePredictionArgs = {
-    Sequence    : string
-    OutputKind  : OutputKind
+    Sequence        : string
+    OutputKind      : OutputKind
+    FileNameHandler : int -> string -> string
 } with
-    static member create sequence outputKind =
+    static member create sequence outputKind fileNameHandler =
         {
-            Sequence    = sequence
-            OutputKind  = outputKind
+            Sequence        = sequence
+            OutputKind      = outputKind
+            FileNameHandler = fileNameHandler
         }
 
 type FastaFilePredictionArgs = {
-    FilePath    : string
-    OutputKind  : OutputKind
+    FilePath        : string
+    OutputKind      : OutputKind
+    FileNameHandler : int -> string -> string
 } with
-    static member create filePath outputKind =
+    static member create filePath outputKind fileNameHandler =
         {
-            FilePath    = filePath
-            OutputKind  = outputKind
+            FilePath        = filePath
+            OutputKind      = outputKind
+            FileNameHandler = fileNameHandler
         }
 
 type iMLPResult = {
@@ -70,12 +75,11 @@ type iMLPResult = {
             )
         |> String.concat "\r\n"
 
-
 type API = {
     SingleSequencePrediction : NLog.Logger -> SingleSequencePredictionArgs -> iMLPResult
-    HandleSingleSequencePredictionResult : NLog.Logger -> OutputKind -> iMLPResult -> unit
+    HandleSingleSequencePredictionResult : NLog.Logger -> SingleSequencePredictionArgs -> iMLPResult -> unit
     FastaFilePrediction : NLog.Logger -> FastaFilePredictionArgs -> iMLPResult []
-    HandleFastaFilePredictionResult : NLog.Logger -> OutputKind -> iMLPResult [] -> unit
+    HandleFastaFilePredictionResult : NLog.Logger -> FastaFilePredictionArgs -> iMLPResult [] -> unit
 } with
     static member create singleSequencePrediction singleHandler fastaFilePrediction fastaHandler =
         {
