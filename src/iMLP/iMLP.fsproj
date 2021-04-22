@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <Platforms>AnyCPU;x64</Platforms>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>imlp</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="5.*" />
     <PackageReference Include="Argu" Version="6.1.1" />
     <PackageReference Include="BioFSharp" Version="2.0.0-beta5" />
     <PackageReference Include="BioFSharp.IO" Version="2.0.0-beta5" />
-    <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
+    <PackageReference Include="CNTK.CPUOnly" Version="2.7" />
     <PackageReference Include="FSharp.Stats" Version="0.4.0" />
     <PackageReference Include="FSharpAux" Version="1.0.0" />
     <PackageReference Include="NLog" Version="4.7.9" />

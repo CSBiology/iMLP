@@ -240,8 +240,13 @@ let singleSequencePrediction (logger:NLog.Logger) (args:SingleSequencePrediction
         |> FastaPreprocessing.filterIllegalCharacters logger
 
     let prediction = 
-        preprocessedFSA
-        |> Prediction.predictIMTSLPropensityForSequence
+        try
+            preprocessedFSA
+            |> Prediction.predictIMTSLPropensityForSequence
+
+        with e as exn ->
+            logger.Error(e)
+            failwith ""
 
     let result = 
         iMLPResult.create  
@@ -260,7 +265,10 @@ let handlesingleSequencePredictionResult (logger:NLog.Logger) (args:SingleSequen
         printfn $"{result |> iMLPResult.toCSV true '\t'}"
 
     | OutputKind.PlotsOnly plotDir -> 
-        ()
+        result.PropensityScores
+        |> Plots.plotPropensity $"iMTS-L propensity profile of {result.Sequence}"
+        |> Chart.SaveHtmlAs $"{plotDir}/protein_0"
+
         printfn $"{result |> iMLPResult.toCSV true '\t'}"
 
     | OutputKind.File outFile -> 
@@ -270,12 +278,77 @@ let handlesingleSequencePredictionResult (logger:NLog.Logger) (args:SingleSequen
         logger.Debug( $"prediction result written to ${outFile}")
 
     | OutputKind.FileAndPlots (outFile,plotDir) -> 
+        result 
+        |> iMLPResult.toCSV true '\t'
+        |> fun resString -> File.WriteAllText(outFile,resString)
+
         logger.Debug( $"prediction result written to ${outFile}")
+
+        result.PropensityScores
+        |> Plots.plotPropensity $"iMTS-L propensity profile of {result.Sequence}"
+        |> Chart.SaveHtmlAs $"{plotDir}/protein_0"
+        printfn $"{result |> iMLPResult.toCSV true '\t'}"
+
         logger.Debug( $"plot written to ${plotDir}")
 
-let fastaFilePrediction (logger:NLog.Logger) (args:FastaFilePredictionArgs) : iMLPResult [] = raise (new System.NotImplementedException())
+let fastaFilePrediction (logger:NLog.Logger) (args:FastaFilePredictionArgs) : iMLPResult [] = 
+    
+    let preprocessedFSA = 
+        args.FilePath
+        |> FastA.fromFile (Array.ofSeq >> String.fromCharArray)
+        |> Seq.map (FastaPreprocessing.filterIllegalCharacters logger)
 
-let handlefastaFilePredictionResult (logger:NLog.Logger) (args:FastaFilePredictionArgs) (results:iMLPResult []) : unit = raise (new System.NotImplementedException())
+    let results = 
+        preprocessedFSA
+        |> Seq.map (fun fsa ->
+            iMLPResult.create
+                fsa.Header
+                fsa.Sequence
+                (Prediction.predictIMTSLPropensityForSequence fsa)
+        )
+
+    logger.Debug($"Successful prediction for {args.FilePath}")
+
+    results
+    |> Array.ofSeq
+
+let handlefastaFilePredictionResult (logger:NLog.Logger) (args:FastaFilePredictionArgs) (results:iMLPResult []) : unit = 
+    
+    match args.OutputKind with
+        | OutputKind.STDOut -> 
+           printfn $"{results |> iMLPResult.seqToCSV true '\t'}"
+
+        | OutputKind.PlotsOnly plotDir -> 
+            results
+            |> Array.iteri (fun i r ->
+                r.PropensityScores
+                |> Plots.plotPropensity $"iMTS-L propensity profile of {r.Header}"
+                |> Chart.SaveHtmlAs ($"plotdir/{args.FileNameHandler i r.Header}")
+            )
+
+            printfn $"{results |> iMLPResult.seqToCSV true '\t'}"
+
+        | OutputKind.File outFile -> 
+            results
+            |> iMLPResult.seqToCSV true '\t'
+            |> fun resString -> File.WriteAllText(outFile,resString)
+            logger.Debug( $"prediction result written to ${outFile}")
+
+        | OutputKind.FileAndPlots (outFile,plotDir) -> 
+            results
+            |> iMLPResult.seqToCSV true '\t'
+            |> fun resString -> File.WriteAllText(outFile,resString)
+
+            logger.Debug( $"prediction result written to ${outFile}")
+
+            results
+            |> Array.iteri (fun i r ->
+                r.PropensityScores
+                |> Plots.plotPropensity $"iMTS-L propensity profile of {r.Header}"
+                |> Chart.SaveHtmlAs ($"plotdir/{args.FileNameHandler i r.Header}")
+            )
+
+            logger.Debug( $"plot written to ${plotDir}")
     
 
 let iMLP_API =
