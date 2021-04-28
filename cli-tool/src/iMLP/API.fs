@@ -13,6 +13,10 @@ open AminoAcids
 open CNTK
 open System.Collections.Generic
 
+module Directory =
+    let ensure path =
+        if not (Directory.Exists(path)) then Directory.CreateDirectory(path) |> ignore
+
 module Prediction =
 
     open System.IO
@@ -351,11 +355,14 @@ let handlefastaFilePredictionResult (logger:NLog.Logger) (args:FastaFilePredicti
            printfn $"{results |> iMLPResult.seqToCSV true '\t'}"
 
         | OutputKind.PlotsOnly plotDir -> 
+
+            Directory.ensure plotDir
+
             results
             |> Array.iteri (fun i r ->
                 r.PropensityScores
                 |> Plots.plotPropensity $"iMTS-L propensity profile of {r.Header}"
-                |> Chart.SaveHtmlAs ($"plotdir/{args.FileNameHandler i r.Header}")
+                |> Chart.SaveHtmlAs ($"{plotDir}/{args.FileNameHandler i r.Header}")
             )
 
             printfn $"{results |> iMLPResult.seqToCSV true '\t'}"
@@ -367,6 +374,9 @@ let handlefastaFilePredictionResult (logger:NLog.Logger) (args:FastaFilePredicti
             logger.Debug( $"prediction result written to ${outFile}")
 
         | OutputKind.FileAndPlots (outFile,plotDir) -> 
+            
+            Directory.ensure plotDir
+
             results
             |> iMLPResult.seqToCSV true '\t'
             |> fun resString -> File.WriteAllText(outFile,resString)
@@ -377,7 +387,7 @@ let handlefastaFilePredictionResult (logger:NLog.Logger) (args:FastaFilePredicti
             |> Array.iteri (fun i r ->
                 r.PropensityScores
                 |> Plots.plotPropensity $"iMTS-L propensity profile of {r.Header}"
-                |> Chart.SaveHtmlAs ($"plotdir/{args.FileNameHandler i r.Header}")
+                |> Chart.SaveHtmlAs ($"{plotDir}/{args.FileNameHandler i r.Header}")
             )
 
             logger.Debug( $"plot written to ${plotDir}")
