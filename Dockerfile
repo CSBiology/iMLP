@@ -62,8 +62,7 @@ Add ./cli-tool /usr/local/imlp
 WORKDIR /usr/local/imlp
 RUN dotnet tool restore
 RUN dotnet fake build
-Run ls
 ENV PATH="/usr/local/imlp/bin/iMLP/net5.0:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/imlp/bin/iMLP/net5.0:${PATH}:${LD_LIBRARY_PATH}"
 
-WORKDIR /usr/local/imlp/bin/iMLP/net5.0
+WORKDIR /data

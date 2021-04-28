@@ -15,6 +15,38 @@ open System.Collections.Generic
 
 module Prediction =
 
+    open System.IO
+    open System.Reflection
+
+    type Model =
+    ///original plant model used in the web API.
+    | Plant
+    ///original non-plant model used in the web API.
+    | NonPlant
+
+        ///returns a byte array from the ressource stream. Either reads the original models from the manifest resources or reads the custom model from the given path
+        static member getModelBuffer =
+            let assembly = Assembly.GetExecutingAssembly()
+            let resnames = assembly.GetManifestResourceNames();
+            function
+            | Plant         ->  match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+                                | Some path -> 
+                                    use stream = assembly.GetManifestResourceStream(path)
+                                    let length = int stream.Length
+                                    use bReader = new BinaryReader(stream)
+                                    bReader.ReadBytes(length)
+
+                                | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
+
+            | NonPlant      ->  match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+                                | Some path ->                                         
+                                    use stream = assembly.GetManifestResourceStream(path)
+                                    let length = int stream.Length
+                                    use bReader = new BinaryReader(stream)
+                                    bReader.ReadBytes(length)
+                                | _ -> failwithf "could not load non-plant model from embedded ressources, check package integrity"
+
+
     type targetPOut = {
         QID         : int
         AA          : AminoAcid
@@ -53,11 +85,11 @@ module Prediction =
         |> List.mapi (fun i x -> x,i)
         |> Map.ofList
           
-    let modelP = @"IMTS.model"
+    let modelBuffer = Model.getModelBuffer Model.NonPlant
     let device = DeviceDescriptor.CPUDevice
     
     let PeptidePredictor : Function = 
-        Function.Load(modelP,device)
+        Function.Load(modelBuffer, device)
     
     let x' = 
         PeptidePredictor.Parameters()
