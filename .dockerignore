@@ -1,0 +1,3 @@
+/cli-tool/.fake
+/cli-tool/.vs
+clitool/build.fsx.lock
