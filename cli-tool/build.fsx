@@ -28,6 +28,7 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.Tools
+open Fake.Api
 
 [<AutoOpen>]
 /// user interaction prompts for critical build tasks where you may want to interrupt when you see wrong inputs.
@@ -80,6 +81,8 @@ module ProjectInfo =
 
     let pkgDir = "pkg"
 
+    let publishDir = "publish"
+
     let release = ReleaseNotes.load "RELEASE_NOTES.md"
 
     let projectRepo = "https://github.com/plotly/Plotly.NET"
@@ -111,7 +114,8 @@ module BasicTasks =
     let clean = BuildTask.create "Clean" [] {
         !! "src/**/bin"
         ++ "src/**/obj"
-        ++ "pkg"
+        ++ pkgDir
+        ++ publishDir
         ++ "bin"
         |> Shell.cleanDirs 
     }
@@ -132,6 +136,46 @@ module BasicTasks =
             }
         )
     }
+
+    let publishBinariesWin = BuildTask.create "PublishBinariesWin" [clean.IfNeeded; build.IfNeeded] {
+        solutionFile
+        |> DotNet.publish (fun p ->
+            let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
+            {
+                p with
+                    Runtime = Some "win-x64"
+                    Configuration = DotNet.BuildConfiguration.fromString configuration
+                    OutputPath = Some (sprintf "%s/win-x64" publishDir)
+                    MSBuildParams = {
+                        standardParams with
+                            Properties = [
+                                "Platform","x64"
+                            ]
+                    };
+            }
+        )
+    }
+
+    let publishBinariesLinux = BuildTask.create "PublishBinariesLinux" [clean.IfNeeded; build.IfNeeded] {
+        solutionFile
+        |> DotNet.publish (fun p ->
+            let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
+            {
+                p with
+                    Runtime = Some "linux-x64"
+                    Configuration = DotNet.BuildConfiguration.fromString configuration
+                    OutputPath = Some (sprintf "%s/linux-x64" publishDir)
+                    MSBuildParams = {
+                        standardParams with
+                            Properties = [
+                                "Platform","x64"
+                            ]
+                    }
+            }
+        )
+    }
+
+    let publishBinaries = BuildTask.createEmpty "PublishBinaries" [clean; build; publishBinariesWin; publishBinariesLinux]
 
     let copyBinaries = BuildTask.create "CopyBinaries" [clean; build] {
         let targets = 
