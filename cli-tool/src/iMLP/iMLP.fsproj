@@ -19,7 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="IMTS.model" />
+    <EmbeddedResource Include="IMTS_nonPlant_HumanMouseYeast.model" />
+    <EmbeddedResource Include="IMTS_Plant_AraMaizeRice.model" />
     <Compile Include="Logging.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="CLIArgs.fs" />

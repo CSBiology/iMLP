@@ -8,7 +8,7 @@ let assembly = Assembly.GetExecutingAssembly()
 let resnames = assembly.GetManifestResourceNames();
 
 let private plantModelBuffer = 
-    match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+    match Array.tryFind (fun (r:string) -> r.Contains("IMTS_Plant_AraMaizeRice.model")) resnames with
     | Some path -> 
         use stream = assembly.GetManifestResourceStream(path)
         let length = int stream.Length
@@ -18,7 +18,7 @@ let private plantModelBuffer =
     | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
 
 let private nonPlantModelBuffer = 
-    match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+    match Array.tryFind (fun (r:string) -> r.Contains("IMTS_nonPlant_HumanMouseYeast.model")) resnames with
     | Some path -> 
         use stream = assembly.GetManifestResourceStream(path)
         let length = int stream.Length

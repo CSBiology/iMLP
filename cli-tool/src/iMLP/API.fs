@@ -50,7 +50,14 @@ module Prediction =
             AminoAcid.Val
             AminoAcid.Trp
             AminoAcid.Tyr
-        ]  
+   
+            AminoAcid.Xaa
+            AminoAcid.Asx
+            AminoAcid.Sel
+            AminoAcid.Glx
+       
+        ]
+
     
     let aminoAcidToVectorIdx = 
         aminoAcidSetStandard        
@@ -91,7 +98,7 @@ module Prediction =
             let rowIndices    = rowIndices |> Array.ofSeq
             let nonZeroValues = nonZeroValues |> Array.ofSeq
             let colStarts = colStarts |> Array.ofSeq
-            Value.CreateSequence<float32>(20,protein.Length,colStarts,rowIndices,nonZeroValues,device)
+            Value.CreateSequence<float32>(24,protein.Length,colStarts,rowIndices,nonZeroValues,device)
   
         //inputShape    
         let inputValues = CNCRepresentationOf featureData
