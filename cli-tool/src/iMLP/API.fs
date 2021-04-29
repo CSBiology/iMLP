@@ -19,38 +19,6 @@ module Directory =
 
 module Prediction =
 
-    open System.IO
-    open System.Reflection
-
-    type Model =
-    ///original plant model used in the web API.
-    | Plant
-    ///original non-plant model used in the web API.
-    | NonPlant
-
-        ///returns a byte array from the ressource stream. Either reads the original models from the manifest resources or reads the custom model from the given path
-        static member getModelBuffer =
-            let assembly = Assembly.GetExecutingAssembly()
-            let resnames = assembly.GetManifestResourceNames();
-            function
-            | Plant         ->  match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
-                                | Some path -> 
-                                    use stream = assembly.GetManifestResourceStream(path)
-                                    let length = int stream.Length
-                                    use bReader = new BinaryReader(stream)
-                                    bReader.ReadBytes(length)
-
-                                | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
-
-            | NonPlant      ->  match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
-                                | Some path ->                                         
-                                    use stream = assembly.GetManifestResourceStream(path)
-                                    let length = int stream.Length
-                                    use bReader = new BinaryReader(stream)
-                                    bReader.ReadBytes(length)
-                                | _ -> failwithf "could not load non-plant model from embedded ressources, check package integrity"
-
-
     type targetPOut = {
         QID         : int
         AA          : AminoAcid
@@ -89,42 +57,42 @@ module Prediction =
         |> List.mapi (fun i x -> x,i)
         |> Map.ofList
           
-    let modelBuffer = Model.getModelBuffer Model.NonPlant
-    let device = DeviceDescriptor.CPUDevice
+    let predict (modelBuffer:byte[]) featureData =
+
+        let device = DeviceDescriptor.CPUDevice
     
-    let PeptidePredictor : Function = 
-        Function.Load(modelBuffer, device)
+        let PeptidePredictor : Function = 
+            Function.Load(modelBuffer, device)
     
-    let x' = 
-        PeptidePredictor.Parameters()
-        |> Seq.toList
-        |> fun x -> x.[x.Length-1].Shape
+        let x' = 
+            PeptidePredictor.Parameters()
+            |> Seq.toList
+            |> fun x -> x.[x.Length-1].Shape
     
-    ///////////Input 
-    let inputVar: Variable = 
-        PeptidePredictor.Arguments.Item 0
+        ///////////Input 
+        let inputVar: Variable = 
+            PeptidePredictor.Arguments.Item 0
     
-    let inputShape = inputVar.Shape
+        let inputShape = inputVar.Shape
     
-    let CNCRepresentationOf (protein:targetPOut []) =
-        /// 
-        let rowIndices            = new ResizeArray<int>()
-        /// new word // should in my case be 1
-        let colStarts             = new ResizeArray<int>()
-        let nonZeroValues         = new ResizeArray<float32>()
-        protein
-        |> Array.iteri (fun i x -> 
-                        nonZeroValues.Add (float32 1.)
-                        rowIndices.Add x.AAIdx
-                        colStarts.Add i
-                        )
-        colStarts.Add protein.Length
-        let rowIndices    = rowIndices |> Array.ofSeq
-        let nonZeroValues = nonZeroValues |> Array.ofSeq
-        let colStarts = colStarts |> Array.ofSeq
-        Value.CreateSequence<float32>(20,protein.Length,colStarts,rowIndices,nonZeroValues,device)
-    
-    let predict featureData = 
+        let CNCRepresentationOf (protein:targetPOut []) =
+            /// 
+            let rowIndices            = new ResizeArray<int>()
+            /// new word // should in my case be 1
+            let colStarts             = new ResizeArray<int>()
+            let nonZeroValues         = new ResizeArray<float32>()
+            protein
+            |> Array.iteri (fun i x -> 
+                            nonZeroValues.Add (float32 1.)
+                            rowIndices.Add x.AAIdx
+                            colStarts.Add i
+                            )
+            colStarts.Add protein.Length
+            let rowIndices    = rowIndices |> Array.ofSeq
+            let nonZeroValues = nonZeroValues |> Array.ofSeq
+            let colStarts = colStarts |> Array.ofSeq
+            Value.CreateSequence<float32>(20,protein.Length,colStarts,rowIndices,nonZeroValues,device)
+  
         //inputShape    
         let inputValues = CNCRepresentationOf featureData
     
@@ -173,13 +141,13 @@ module Prediction =
                 )
             |> Array.ofSeq
     
-    let predictFinal (sequence:string) = 
+    let predictFinal (modelBuffer:byte[]) (sequence:string) = 
         let bsequence = BioSeq.ofAminoAcidString sequence
-        let _, predictedTraces = predict (bioSeqToInput bsequence) 
+        let _, predictedTraces = predict modelBuffer (bioSeqToInput bsequence) 
         predictedTraces
 
-    let predictIMTSLPropensityForSequence (inputSequence: FastA.FastaItem<string>) =
-        predictFinal inputSequence.Sequence
+    let predictIMTSLPropensityForSequence (modelBuffer:byte[]) (inputSequence: FastA.FastaItem<string>) =
+        predictFinal modelBuffer inputSequence.Sequence
 
 module Plots =
     
@@ -278,7 +246,7 @@ let singleSequencePrediction (logger:NLog.Logger) (args:SingleSequencePrediction
     let prediction = 
         try
             preprocessedFSA
-            |> Prediction.predictIMTSLPropensityForSequence
+            |> Prediction.predictIMTSLPropensityForSequence (args.Model |> Model.getModelBuffer)
 
         with e as exn ->
             logger.Error(e)
@@ -340,7 +308,7 @@ let fastaFilePrediction (logger:NLog.Logger) (args:FastaFilePredictionArgs) : iM
             iMLPResult.create
                 fsa.Header
                 fsa.Sequence
-                (Prediction.predictIMTSLPropensityForSequence fsa)
+                (Prediction.predictIMTSLPropensityForSequence (args.Model |> Model.getModelBuffer) fsa)
         )
 
     logger.Debug($"Successful prediction for {args.FilePath}")

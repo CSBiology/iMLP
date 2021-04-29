@@ -13,7 +13,6 @@
     <Description>imlp predicts iMTS-L propensity profiles of protein sequences of interest</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/CSBiology/iMLP/</PackageProjectUrl>
-    <PackageIcon>logo.png</PackageIcon>
     <PackageTags>sequence-analysis lstm bioinformatics computational-biology</PackageTags>
     <RepositoryUrl>https://github.com/CSBiology/iMLP/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

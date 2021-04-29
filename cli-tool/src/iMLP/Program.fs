@@ -50,6 +50,13 @@ Learn more about iMTS-L here: [LINK]
 
         logger.Debug($"Output Kind: {outputKind}")
 
+        let model = 
+            match (results.GetResult (IMLP_CLIArgs.Model, defaultValue = OrganismModel.NonPlant)) with
+            | OrganismModel.Plant -> Domain.Model.Plant
+            | OrganismModel.NonPlant -> Domain.Model.NonPlant
+            | _ -> Domain.Model.NonPlant
+            
+
         let fileNameHandler = 
             match (results.TryGetResult IMLP_CLIArgs.ProteinHeaderRegex) with
             | Some pattern -> 
@@ -76,6 +83,7 @@ Learn more about iMTS-L here: [LINK]
                 SingleSequencePredictionArgs.create
                     sequence
                     outputKind
+                    model
                     fileNameHandler
 
             logger.Debug($"apiArgs:\r\n{apiArgs}")
@@ -91,6 +99,7 @@ Learn more about iMTS-L here: [LINK]
                 FastaFilePredictionArgs.create
                     file
                     outputKind
+                    model
                     fileNameHandler
 
             logger.Debug($"apiArgs:\r\n{apiArgs}")
