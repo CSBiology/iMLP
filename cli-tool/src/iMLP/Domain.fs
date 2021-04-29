@@ -4,33 +4,41 @@ open NLog
 open System.IO
 open System.Reflection
 
+let assembly = Assembly.GetExecutingAssembly()
+let resnames = assembly.GetManifestResourceNames();
+
+let private plantModelBuffer = 
+    match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+    | Some path -> 
+        use stream = assembly.GetManifestResourceStream(path)
+        let length = int stream.Length
+        use bReader = new BinaryReader(stream)
+        bReader.ReadBytes(length)
+
+    | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
+
+let private nonPlantModelBuffer = 
+    match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
+    | Some path -> 
+        use stream = assembly.GetManifestResourceStream(path)
+        let length = int stream.Length
+        use bReader = new BinaryReader(stream)
+        bReader.ReadBytes(length)
+
+    | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
+
+
 type Model =
     | Plant
     | NonPlant
 
     ///returns a byte array from the ressource stream. Either reads the original models from the manifest resources or reads the custom model from the given path
-    static member getModelBuffer =
+    static member getModelBuffer (model: Model) =
         let assembly = Assembly.GetExecutingAssembly()
         let resnames = assembly.GetManifestResourceNames();
-        function
-        | Plant ->  
-            match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
-            | Some path -> 
-                use stream = assembly.GetManifestResourceStream(path)
-                let length = int stream.Length
-                use bReader = new BinaryReader(stream)
-                bReader.ReadBytes(length)
-
-            | _ -> failwithf "could not plant load model from embedded ressources, check package integrity"
-
-        | NonPlant  ->  
-            match Array.tryFind (fun (r:string) -> r.Contains("IMTS.model")) resnames with
-            | Some path ->                                         
-                use stream = assembly.GetManifestResourceStream(path)
-                let length = int stream.Length
-                use bReader = new BinaryReader(stream)
-                bReader.ReadBytes(length)
-            | _ -> failwithf "could not load non-plant model from embedded ressources, check package integrity"
+        match model with
+        | Plant     -> plantModelBuffer
+        | NonPlant  -> nonPlantModelBuffer
 
 type OutputKind =
     | STDOut
