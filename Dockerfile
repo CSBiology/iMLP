@@ -52,7 +52,7 @@ RUN cp /usr/local/cntk/cntk/lib/Cntk.Core.CSBinding-2.7.so /usr/local/cntk/cntk/
 
 ENV PATH="/usr/local/cntk/cntk/lib:${PATH}"
 ENV PATH="/usr/local/cntk/dependencies/lib:${PATH}"
-ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/dependencies/lib:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/lib:${LD_LIBRARY_PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/dependencies/lib:${LD_LIBRARY_PATH}"
 
 ## Clone imlp repo, replace with binary release later eventually
