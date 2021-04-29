@@ -352,3 +352,4 @@ pgk/
 /cli-tool/tests/iMLP.Tests/plots
 /cli-tool/tests/iMLP.Tests/test-output.tsv
 /cli-tool/tests/iMLP.Tests/test-output
+/cli-tool/tests/tool-tests/

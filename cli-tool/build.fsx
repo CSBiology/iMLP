@@ -330,6 +330,22 @@ module ReleaseTasks =
         else failwith "aborted"
     }
 
+module ToolTasks =
+
+    open ProjectInfo
+    open BasicTasks
+    open TestTasks
+    open PackageTasks
+
+    let installPackagedTool = BuildTask.create "InstallPackagedTool" [packPrerelease] {
+        Directory.ensure "tests/tool-tests"
+        runDotNet "new tool-manifest --force" "tests/tool-tests"
+        runDotNet (sprintf "tool install --add-source ../../%s imlp --version %s" pkgDir prereleaseTag) "tests/tool-tests"
+    }
+
+    let testPackagedTool = BuildTask.create "TestPackagedTool" [installPackagedTool] {
+        runDotNet "imlp --help" "tests/tool-tests"
+    }
 
 open BasicTasks
 open TestTasks
