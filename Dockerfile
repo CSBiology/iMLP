@@ -1,3 +1,5 @@
+ARG IMLP_VERSION=0.1.0
+
 FROM mcr.microsoft.com/dotnet/sdk:5.0.202-focal-amd64
 
 ################## METADATA ######################
@@ -55,14 +57,8 @@ ENV PATH="/usr/local/cntk/dependencies/lib:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/lib:${LD_LIBRARY_PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/dependencies/lib:${LD_LIBRARY_PATH}"
 
-## Clone imlp repo, replace with binary release later eventually
-
-Add ./cli-tool /usr/local/imlp
-
-WORKDIR /usr/local/imlp
-RUN dotnet tool restore
-RUN dotnet fake build
-ENV PATH="/usr/local/imlp/bin/iMLP/net5.0:${PATH}"
-ENV LD_LIBRARY_PATH="/usr/local/imlp/bin/iMLP/net5.0:${PATH}:${LD_LIBRARY_PATH}"
+## install imlp tool
 
 WORKDIR /data
+RUN dotnet new tool-manifest
+RUN dotnet tool install imlp --version $IMLP_VERSION

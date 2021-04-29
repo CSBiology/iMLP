@@ -243,12 +243,14 @@ module PackageTasks =
                             Properties = ([
                                 "Version",stableVersionTag
                                 "PackageReleaseNotes",  (release.Notes |> String.concat "\r\n")
+                                "Platform","x64"
                             ] @ p.MSBuildParams.Properties)
                         }
                     {
                         p with 
                             MSBuildParams = msBuildParams
                             OutputPath = Some pkgDir
+                            Configuration = DotNet.BuildConfiguration.fromString configuration
                     }
                 ))
         else failwith "aborted"
@@ -265,6 +267,7 @@ module PackageTasks =
                                     Properties = ([
                                         "Version", prereleaseTag
                                         "PackageReleaseNotes",  (release.Notes |> String.toLines )
+                                        "Platform","x64"
                                     ] @ p.MSBuildParams.Properties)
                                 }
                             {
@@ -272,6 +275,7 @@ module PackageTasks =
                                     VersionSuffix = Some prereleaseSuffix
                                     OutputPath = Some pkgDir
                                     MSBuildParams = msBuildParams
+                                    Configuration = DotNet.BuildConfiguration.fromString configuration
                             }
                 ))
         else
