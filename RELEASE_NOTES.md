@@ -1,3 +1,7 @@
+#### 0.1.2 - 05/04/2021
+
+- Add model fallback path if they can not be loaded from the assembly
+
 #### 0.1.1 - 05/04/2021
 
 - Fix models not being present in the tool package

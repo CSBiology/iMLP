@@ -40,6 +40,11 @@ type Model =
         | Plant     -> plantModelBuffer
         | NonPlant  -> nonPlantModelBuffer
 
+    static member getFallbackPath (model: Model) =
+        match model with
+        | Plant     -> "/models/CNTK/plant/IMTS_Plant_AraMaizeRice.model"
+        | NonPlant  -> "/models/CNTK/non_plant/IMTS_nonPlant_HumanMouseYeast.model"
+
 type OutputKind =
     | STDOut
     | File of outputFile:string 

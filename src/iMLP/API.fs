@@ -64,13 +64,21 @@ module Prediction =
         |> List.mapi (fun i x -> x,i)
         |> Map.ofList
           
-    let predict (modelBuffer:byte[]) featureData =
+    let predict (logger:NLog.Logger) (modelBuffer:byte[]) (alternatePath:string) featureData =
 
         let device = DeviceDescriptor.CPUDevice
     
         let PeptidePredictor : Function = 
-            Function.Load(modelBuffer, device)
-    
+            try
+                Function.Load(modelBuffer, device)
+            with e as exn ->
+                logger.Warn(e)
+                try
+                    Function.Load(alternatePath, device)
+                with e2 as exn ->
+                    logger.Error(e2)
+                    failwith e2.Message
+
         let x' = 
             PeptidePredictor.Parameters()
             |> Seq.toList
@@ -148,13 +156,13 @@ module Prediction =
                 )
             |> Array.ofSeq
     
-    let predictFinal (modelBuffer:byte[]) (sequence:string) = 
+    let predictFinal (logger:NLog.Logger) (modelBuffer:byte[]) (alternateModelPath:string) (sequence:string) = 
         let bsequence = BioSeq.ofAminoAcidString sequence
-        let _, predictedTraces = predict modelBuffer (bioSeqToInput bsequence) 
+        let _, predictedTraces = predict logger modelBuffer alternateModelPath (bioSeqToInput bsequence) 
         predictedTraces
 
-    let predictIMTSLPropensityForSequence (modelBuffer:byte[]) (inputSequence: FastA.FastaItem<string>) =
-        predictFinal modelBuffer inputSequence.Sequence
+    let predictIMTSLPropensityForSequence (logger:NLog.Logger) (modelBuffer:byte[]) (alternateModelPath:string) (inputSequence: FastA.FastaItem<string>) =
+        predictFinal logger modelBuffer alternateModelPath inputSequence.Sequence
 
 module Plots =
     
@@ -253,7 +261,10 @@ let singleSequencePrediction (logger:NLog.Logger) (args:SingleSequencePrediction
     let prediction = 
         try
             preprocessedFSA
-            |> Prediction.predictIMTSLPropensityForSequence (args.Model |> Model.getModelBuffer)
+            |> Prediction.predictIMTSLPropensityForSequence 
+                logger
+                (args.Model |> Model.getModelBuffer)
+                (args.Model |> Model.getFallbackPath)
 
         with e as exn ->
             logger.Error(e)
@@ -315,7 +326,13 @@ let fastaFilePrediction (logger:NLog.Logger) (args:FastaFilePredictionArgs) : iM
             iMLPResult.create
                 fsa.Header
                 fsa.Sequence
-                (Prediction.predictIMTSLPropensityForSequence (args.Model |> Model.getModelBuffer) fsa)
+                (
+                    Prediction.predictIMTSLPropensityForSequence 
+                        logger 
+                        (args.Model |> Model.getModelBuffer) 
+                        (args.Model |> Model.getFallbackPath) 
+                        fsa
+                )
         )
 
     logger.Debug($"Successful prediction for {args.FilePath}")
