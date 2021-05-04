@@ -85,7 +85,7 @@ module ProjectInfo =
 
     let release = ReleaseNotes.load "RELEASE_NOTES.md"
 
-    let projectRepo = "https://github.com/plotly/Plotly.NET"
+    let projectRepo = "https://github.com/CSBiology/iMLP"
 
     let stableVersion = SemVer.parse release.NugetVersion
 
