@@ -1,3 +1,7 @@
+#### 0.1.1 - 05/04/2021
+
+- Fix models not being present in the tool package
+
 #### 0.1.0 - 04/29/2021
 
 First release of the imlp cli tool. 

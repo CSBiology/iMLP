@@ -9,10 +9,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D61DBDBF
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "iMLP.Tests", "tests\iMLP.Tests\iMLP.Tests.fsproj", "{B9C01284-A221-45E9-A119-3CB61BEC116B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{D0B63EE5-D3ED-45FC-9530-496117899E5E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docker", ".docker", "{D0B63EE5-D3ED-45FC-9530-496117899E5E}"
 	ProjectSection(SolutionItems) = preProject
-		..\.dockerignore = ..\.dockerignore
-		..\Dockerfile = ..\Dockerfile
+		.dockerignore = .dockerignore
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".meta", ".meta", "{F2246C2B-105F-4547-8452-550EB0A30336}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ECFF085B-DA9C-4827-B043-A08C977175BB}"
+	ProjectSection(SolutionItems) = preProject
+		build.fsx = build.fsx
+		build.fsx.lock = build.fsx.lock
 	EndProjectSection
 EndProject
 Global
