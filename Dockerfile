@@ -1,4 +1,4 @@
-ARG IMLP_VERSION=0.1.0
+ARG IMLP_VERSION="0.1.0"
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.202-focal-amd64
 
@@ -18,7 +18,7 @@ LABEL about.tags="Sequence analysis"
 
 LABEL author Kevin Schneider <schneike@bio.uni-kl.de>
 LABEL author David Zimmer <davidzimmer91@gmail.com>
-LABEL author Timo Mühlhaus <muehlhaus@bio.uni-kl.de>
+LABEL author Timo MÃ¼hlhaus <muehlhaus@bio.uni-kl.de>
 
 #################### INSTALL ########################
 
@@ -61,4 +61,4 @@ ENV LD_LIBRARY_PATH="/usr/local/cntk/cntk/dependencies/lib:${LD_LIBRARY_PATH}"
 
 WORKDIR /data
 RUN dotnet new tool-manifest
-RUN dotnet tool install imlp --version $IMLP_VERSION
+RUN dotnet tool install imlp --version "$IMLP_VERSION"

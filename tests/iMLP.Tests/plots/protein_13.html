@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Plotly.js -->
+        <meta http-equiv="X-UA-Compatible" content="IE=11" >
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <style>
+        .container {
+          padding-right: 25px;
+          padding-left: 25px;
+          margin-right: 0 auto;
+          margin-left: 0 auto;
+        }
+        @media (min-width: 768px) {
+          .container {
+            width: 750px;
+          }
+        }
+        @media (min-width: 992px) {
+          .container {
+            width: 970px;
+          }
+        }
+        @media (min-width: 1200px) {
+          .container {
+            width: 1170px;
+          }
+        }
+        </style>
+    </head>
+    <body>
+      <div id="9b2aba95-8ce1-4728-bd50-58d7288cc795" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9b2aba958ce14728bd5058d7288cc795 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129],"y":[3.077209711074829,3.0300676822662354,2.8892269134521484,2.6105263233184814,2.30381178855896,1.965025544166565,1.6701760292053223,1.4445695877075195,1.2036793231964111,0.9958505630493164,0.8120022416114807,0.6396812796592712,0.4558216333389282,0.2940274775028229,0.16815999150276184,0.06063183769583702,-0.05419069156050682,-0.1563396006822586,-0.24990899860858917,-0.3253075182437897,-0.4028562307357788,-0.4657101631164551,-0.544990062713623,-0.6108420491218567,-0.6631855368614197,-0.7127863168716431,-0.7901294827461243,-0.8551710844039917,-0.9300273656845093,-0.9957392811775208,-1.0476162433624268,-1.088094711303711,-1.1131713390350342,-1.1596572399139404,-1.1721136569976807,-1.206713318824768,-1.222812533378601,-1.2266435623168945,-1.231856107711792,-1.2423880100250244,-1.228344202041626,-1.2724897861480713,-1.279531717300415,-1.3018726110458374,-1.3277920484542847,-1.3158859014511108,-1.3372371196746826,-1.3414498567581177,-1.3263044357299805,-1.2839369773864746,-1.2142601013183594,-1.143601655960083,-1.084131121635437,-1.0263144969940186,-0.9777060151100159,-0.9490931630134583,-0.9264311194419861,-0.9040859937667847,-0.9001191854476929,-0.8960986137390137,-0.8800503611564636,-0.8736753463745117,-0.8735852837562561,-0.8578125834465027,-0.856705904006958,-0.8444496393203735,-0.8380770683288574,-0.8346361517906189,-0.8419085144996643,-0.8428395390510559,-0.8318897485733032,-0.8227444291114807,-0.825275719165802,-0.8330032229423523,-0.8351802229881287,-0.8360047936439514,-0.8313091397285461,-0.8402754068374634,-0.8314208388328552,-0.8183269500732422,-0.8154893517494202,-0.8155034184455872,-0.8071901798248291,-0.7979487776756287,-0.7855108380317688,-0.7624502778053284,-0.7495231032371521,-0.7446849346160889,-0.7362852096557617,-0.7347044944763184,-0.7387804985046387,-0.7352385520935059,-0.715036153793335,-0.6966357827186584,-0.7030811309814453,-0.7048273086547852,-0.7025333046913147,-0.6989241242408752,-0.706552267074585,-0.7187543511390686,-0.7270789742469788,-0.7329232692718506,-0.7422093749046326,-0.7690394520759583,-0.778812825679779,-0.7866881489753723,-0.805217444896698,-0.8302997946739197,-0.848484992980957,-0.8702871203422546,-0.8963785171508789,-0.9129950404167175,-0.932437539100647,-0.9396895170211792,-0.9346489310264587,-0.9247816205024719,-0.9266070127487183,-0.9261385798454285,-0.9367778301239014,-0.9431297183036804,-0.9768739342689514,-1.0304579734802246,-1.0758402347564697,-1.0840630531311035,-1.0690274238586426,-1.0445259809494019,-1.0115673542022705,-0.9723803400993347,-0.9377410411834717],"mode":"lines","fill":"tozeroy","name":"Propensity Score","line":{"width":2.5,"color":"rgb(237, 125, 49, 0.9)","shape":"spline"},"marker":{"color":"rgb(237, 125, 49, 0.9)"}}];
+            var layout = {"yaxis":{"title":"Score","tickmode":"auto","ticks":"inside","mirror":"all","showline":true,"showgrid":false,"zeroline":true,"titlefont":{"family":"Arial","size":18},"tickfont":{"family":"Arial","size":18}},"xaxis":{"title":"Index of AminoAcid","tickmode":"auto","ticks":"inside","mirror":"all","showline":true,"showgrid":false,"titlefont":{"family":"Arial","size":18.0},"tickfont":{"family":"Arial","size":18.0}},"title":"iMTS-L propensity profile of SGDID:S000003159 DisplayId=YGL191W Aliases=COX13 Annotaion=None Description=Subunit VIa of cytochrome c oxidase; present in a subclass of cytochrome c oxidase complexes that may have a role in mimimizing generation of reactive oxygen species; not essential for cytochrome c oxidase activity but may modulate activity in response to ATP; required for assembly of Rcf2p into cytochrome c oxidase - cytochrome bc1 supercomplexes","paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"white","width":600.0,"height":600.0};
+            var config = {};
+            Plotly.newPlot('9b2aba95-8ce1-4728-bd50-58d7288cc795', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9b2aba958ce14728bd5058d7288cc795();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9b2aba958ce14728bd5058d7288cc795();
+            }
+</script>
+
+      
+    </body>
+</html>

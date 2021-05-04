@@ -19,8 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="IMTS_nonPlant_HumanMouseYeast.model" />
-    <EmbeddedResource Include="IMTS_Plant_AraMaizeRice.model" />
+    <EmbeddedResource Include="models\CNTK\non_plant\IMTS_nonPlant_HumanMouseYeast.model">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="models\CNTK\plant\IMTS_Plant_AraMaizeRice.model">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Compile Include="Logging.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="CLIArgs.fs" />

@@ -22,9 +22,9 @@ The imlp cli tool predicts iMTS-L propensity profiles for proteins of interest.
 ### Dotnet tool
 
 imlp is packaged as dotnet tool. To use it:
-- install the [.NET SDK]() for your system
-- run either `dotnet tool install imlp` for a local or `dotnet tool install -g imlp` for a global installation
-- you can now run the tool via `dotnet imlp ...`
+- install the [.NET SDK](https://dotnet.microsoft.com/download) for your system
+- run either `dotnet tool install imlp` (after initializing a local manifest via `dotnet new tool-manifest`) for a local or `dotnet tool install -g imlp` for a global installation
+- you can now run the tool via `dotnet imlp ...` (for a local installation) or `imlp ...` (for a global installation)
 
 #### Dependencies on linux
 
@@ -35,6 +35,8 @@ The CNTK nuget package sadly only works ootb on windows. On linux, several nativ
 - finally, apply this fix:
     - navigate to the location where you unpacked the cntk binaries
     - run `cp ./cntk/lib/Cntk.Core.CSBinding-2.7.so ./cntk/lib/libCntk.Core.CSBinding-2.7.dll`
+
+all steps can be seen executed in out [Dockerfile](./Dockerfile)
     
 ### Docker
 
