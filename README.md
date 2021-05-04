@@ -6,18 +6,32 @@ The imlp cli tool predicts iMTS-L propensity profiles for proteins of interest.
 
 - [General](#general)
 - [Installation](#installation)
+    - [Best way for your OS](#best-way-for-your-os)
     - [Dotnet tool](#dotnet-tool)
-        - [Dependencies on linux](#dependencies-on-linux)
+        - [External dependencies on linux](#external-dependencies-on-linux)
+        - [External dependencies on windows](#external-dependencies-on-windows)
     - [Docker](#docker)
     - [Published binaries](#published-binaries)
 - [Usage](#usage)
 - [Development](#development)
+    - [build](#build)
+    - [test](#test)
+    - [publish self contained libraries](#publish-self-contained-libraries)
+    - [docker](#docker)
 
 <!-- /TOC -->
 
 ## General
 
 ## Installation
+
+### Best way for your OS
+
+Due to the problems arising with CNTK external dependency installation, we offer several containerized/self contained alternatives to the dotnet tool, 
+which due to limitations by design will not work in a self contained manner.
+
+- For linux distros and mac, we recommend to use the [docker container](#docker), which will take care of any external dependency management.
+- For windows users, we recommend to use the self contained binaries published [here]() or the docker container
 
 ### Dotnet tool
 
@@ -26,9 +40,9 @@ imlp is packaged as dotnet tool. To use it:
 - run either `dotnet tool install imlp` (after initializing a local manifest via `dotnet new tool-manifest`) for a local or `dotnet tool install -g imlp` for a global installation
 - you can now run the tool via `dotnet imlp ...` (for a local installation) or `imlp ...` (for a global installation)
 
-#### Dependencies on linux
+#### External dependencies on linux
 
-The CNTK nuget package sadly only works ootb on windows. On linux, several native dependencies must be installed and be added to environment variables. The necessary libraries are the CNTK binaries themselves and OpenMPI. 
+CNTK has some external dependencies that can not be published with the packaged tool.
 
 - the necessary cntk binaries can be downloaded [here](https://cntk.azurewebsites.net/BinaryDrop/CNTK-2-7-Linux-64bit-CPU-Only.tar.gz)
 - for installation of OpenMPI, please follow [this guide]()
@@ -37,14 +51,21 @@ The CNTK nuget package sadly only works ootb on windows. On linux, several nativ
     - run `cp ./cntk/lib/Cntk.Core.CSBinding-2.7.so ./cntk/lib/libCntk.Core.CSBinding-2.7.dll`
 
 all steps can be seen executed in out [Dockerfile](./Dockerfile)
+
+#### External dependencies on windows
+
+CNTK has some external dependencies that can not be published with the packaged tool.
+
+Download the CNTK package here: https://cntk.ai/dlwc-2.7.html and add the extracted ./cntk/cntk folder to your path variable.
     
 ### Docker
 
-A Dockerfile can be downloaded under [releases]() or found [here](). It takes care of setting up the necessary native dependencies of CNTK. Due to that, the resulting image will be quite large (~7GB). Build the dockerfile by running `docker build . -t imlp`
+A Dockerfile can be downloaded under [releases]() or found [here](./Dockerfile). It takes care of setting up the necessary native dependencies of CNTK. Due to that, the resulting image will be quite large (~7GB). Build the dockerfile by running `docker build . -t imlp`
+imlp is installed as local tool usable under `/data` via `dotnet imlp` in the container.
 
 ### Published binaries
 
-Download links to self-contained binaries can be found under [releases](). Linux users have to apply the same fixes as laid out under the [dotnet tool section](#dotnet-tool)
+Download links to self-contained binaries can be found under [releases](). Linux users have to apply the same fixes as laid out under the [dotnet tool section](#external-dependencies-on-linux)
 
 ## Usage
 
@@ -79,3 +100,23 @@ OPTIONS:
 ```
 
 ## Development
+
+### build 
+
+- `dotnet tool restore` (once)
+- `dotnet fake build`
+
+### test
+
+- `dotnet tool restore` (once)
+- `dotnet fake build -t testpackagedtool` (You need to have external dependencies ([win](#external-dependencies-on-windows)/[linux](#external-dependencies-on-linux)) installed)
+
+### publish self contained libraries
+
+- `dotnet tool restore` (once)
+- `dotnet fake build -t publishbinaries` will publish both `win-x64` and `linux-x64` binaries. 
+
+### docker
+
+- set the correct imlp version in the containers `IMLP_VERSION` argument
+- `docker build . -t imlp`

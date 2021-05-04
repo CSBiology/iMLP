@@ -1,4 +1,4 @@
-ARG IMLP_VERSION="0.1.1"
+ARG IMLP_VERSION="0.1.2"
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.202-focal-amd64
 

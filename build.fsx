@@ -348,7 +348,7 @@ module ToolTasks =
     }
 
     let testPackagedTool = BuildTask.create "TestPackagedTool" [installPackagedTool] {
-        runDotNet "imlp --help" "tests/tool-tests"
+        runDotNet "imlp -s QWEQWEQWE" "tests/tool-tests"
     }
 
 open BasicTasks
