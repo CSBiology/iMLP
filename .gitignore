@@ -353,3 +353,4 @@ pgk/
 /cli-tool/tests/iMLP.Tests/test-output.tsv
 /cli-tool/tests/iMLP.Tests/test-output
 /cli-tool/tests/tool-tests/
+/src/iMLP/models/ONNX.zip

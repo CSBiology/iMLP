@@ -150,6 +150,7 @@ module BasicTasks =
                         standardParams with
                             Properties = [
                                 "Platform","x64"
+                                "PublishSingleFile","true"
                             ]
                     };
             }
@@ -169,6 +170,7 @@ module BasicTasks =
                         standardParams with
                             Properties = [
                                 "Platform","x64"
+                                "PublishSingleFile","true"
                             ]
                     }
             }
