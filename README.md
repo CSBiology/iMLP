@@ -6,7 +6,7 @@ The imlp cli tool predicts iMTS-L propensity profiles for proteins of interest.
 
 - [General](#general)
 - [Installation](#installation)
-    - [Best way for your OS](#best-way-for-your-os)
+    - [Docker (Recommended)](#docker-recommended)
     - [Dotnet tool](#dotnet-tool)
         - [External dependencies on linux](#external-dependencies-on-linux)
         - [External dependencies on windows](#external-dependencies-on-windows)
@@ -25,13 +25,30 @@ The imlp cli tool predicts iMTS-L propensity profiles for proteins of interest.
 
 ## Installation
 
-### Best way for your OS
+### Docker (Recommended) 
 
-Due to the problems arising with CNTK external dependency installation, we offer several containerized/self contained alternatives to the dotnet tool, 
-which due to limitations by design will not work in a self contained manner.
+This tool is very easy to install and use with docker.
 
-- For linux distros and mac, we recommend to use the [docker container](#docker), which will take care of any external dependency management.
-- For windows users, we recommend to use the self contained binaries published [here]() or the docker container
+Dependencies: Only [Docker](https://www.docker.com) :whale:!
+
+Steps to run only once:
+1. `docker pull csbdocker/imlp`, this step might take a few minutes, as the image is around 5GB.
+2. `docker run -i -d csbdocker/imlp`, start a container from the just downloaded image and run it in the background.
+
+Done! You now have a docker container from the csbdocker/imlp image. You can find the id of the container and more with:
+
+1. `docker ps -l`
+
+Output:
+| CONTAINER ID | IMAGE          | COMMAND     | CREATED        | STATUS        | PORTS | NAMES        |
+|--------------|----------------|-------------|----------------|---------------|-------|--------------|
+| da9b7ed591eb | csbdocker/imlp | "/bin/bash" | 10 minutes ago | Up 10 minutes |       | loving_moser |
+
+With this container id (Yours will differ! :warning:) you can start/stop/restart or delete this container. In our case we want to open a console inside the **running** container.
+
+2. `docker exec -it da9b7ed591eb bash`, this will pen a console and you can now type to execute commands inside the container.
+3. Run imlp with `dotnet imlp --help` :tada:
+4. Check out how to use imlp [here](#usage).
 
 ### Dotnet tool
 
@@ -58,11 +75,6 @@ CNTK has some external dependencies that can not be published with the packaged 
 
 Download the CNTK package here: https://cntk.ai/dlwc-2.7.html and add the extracted ./cntk/cntk folder to your path variable.
     
-### Docker
-
-A Dockerfile can be downloaded under [releases]() or found [here](./Dockerfile). It takes care of setting up the necessary native dependencies of CNTK. Due to that, the resulting image will be quite large (~7GB). Build the dockerfile by running `docker build . -t imlp`
-imlp is installed as local tool usable under `/data` via `dotnet imlp` in the container.
-
 ### Published binaries
 
 Download links to self-contained binaries can be found under [releases](). Linux users have to apply the same fixes as laid out under the [dotnet tool section](#external-dependencies-on-linux)
