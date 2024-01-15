@@ -50,6 +50,26 @@ With this container id (Yours will differ! :warning:) you can start/stop/restart
 3. Run imlp with `dotnet imlp --help` :tada:
 4. Check out how to use imlp [here](#usage).
 
+#### Using the docker container with mounted directories
+
+The usual use-case is using an input file in fasta format. Obviously, this file must be accessible in the container that you execute the tool in. 
+
+A simple way of doing this is mounting the directory on creation of the container:
+
+`docker run -it csbdocker/imlp --mount type=bind,source="<your-path-here>",target=<container-path-here>`
+
+**Example:**
+
+Suppose you have a file `test.fasta` in `C:/my-folder`:
+
+bind `C:/my-folder` to `/data`:
+
+`docker run -it csbdocker/imlp --mount type=bind,source="C:/my-folder",target=/data`
+
+inside the container, you can use the container path you just bound toi access the file:
+
+``
+
 ### Dotnet tool
 
 imlp is packaged as dotnet tool. To use it:
