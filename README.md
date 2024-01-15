@@ -56,7 +56,9 @@ The usual use-case is using an input file in fasta format. Obviously, this file 
 
 A simple way of doing this is mounting the directory on creation of the container. Note that you should target a subfolder of `data` in the container, as the container starts in /data per default.
 
-`docker run -it csbdocker/imlp --mount type=bind,source="<your-path-here>",target=/data/<container-path-here>`
+```
+docker run -it csbdocker/imlp --mount type=bind,source="<your-path-here>",target=/data/<container-path-here>
+```
 
 **Example:**
 
@@ -64,11 +66,15 @@ Suppose you have a file `test.fasta` in `C:/my-folder`:
 
 bind `C:/my-folder` to `/data/fastas`:
 
-`docker run -it csbdocker/imlp --mount type=bind,source="C:/my-folder",target=/data/fastas`
+```
+docker run -it csbdocker/imlp --mount type=bind,source="C:/my-folder",target=/data/fastas
+```
 
 inside the container, you can use the container path you just bound to access the file, e.g.:
 
-`dotnet imlp -f ./fastas/test.fasta -o ./fastas/output.txt`
+```
+dotnet imlp -f ./fastas/test.fasta -o ./fastas/output.txt
+```
 
 which will run imlp with the fasta input and generate an output file in the same folder, which will also be available on the containers host OS afterwards.
 
